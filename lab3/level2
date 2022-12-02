@@ -1,0 +1,107 @@
+	.file	"lab3p2.c"
+	.text
+	.section	.text.startup,"ax",@progbits
+	.p2align 4
+	.globl	main
+	.type	main, @function
+main:
+.LFB0:
+	.cfi_startproc
+	endbr32
+	ret
+	.cfi_endproc
+.LFE0:
+	.size	main, .-main
+	.text
+	.p2align 4
+	.globl	get_pair
+	.type	get_pair, @function
+get_pair:
+.LFB1:
+	.cfi_startproc
+	endbr32
+	ret
+	.cfi_endproc
+.LFE1:
+	.size	get_pair, .-get_pair
+	.p2align 4
+	.globl	raise2pwr
+	.type	raise2pwr, @function
+raise2pwr:
+.LFB2:
+	.cfi_startproc
+	endbr32
+	pushl	%ebx
+	.cfi_def_cfa_offset 8
+	.cfi_offset 3, -8
+	movl	12(%esp), %ebx
+	movl	8(%esp), %ecx
+	testl	%ebx, %ebx
+	jle	.L9
+	addl	$1, %ebx
+	movl	$1, %edx
+	movl	$1, %eax
+	.p2align 4,,10
+	.p2align 3
+.L6:
+	cmpl	$1, %ecx
+	jle	.L8
+	imull	%ecx, %edx
+.L8:
+	addl	$1, %eax
+	cmpl	%ebx, %eax
+	jne	.L6
+	movl	%edx, %eax
+	popl	%ebx
+	.cfi_remember_state
+	.cfi_restore 3
+	.cfi_def_cfa_offset 4
+	ret
+.L9:
+	.cfi_restore_state
+	movl	$1, %edx
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 4
+	movl	%edx, %eax
+	ret
+	.cfi_endproc
+.LFE2:
+	.size	raise2pwr, .-raise2pwr
+	.p2align 4
+	.globl	mul_op
+	.type	mul_op, @function
+mul_op:
+.LFB3:
+	.cfi_startproc
+	endbr32
+	movl	8(%esp), %edx
+	movl	4(%esp), %eax
+	cmpl	$1, %edx
+	jle	.L11
+	subl	$2, %edx
+	imull	%eax, %edx
+	leal	(%edx,%eax,2), %eax
+.L11:
+	ret
+	.cfi_endproc
+.LFE3:
+	.size	mul_op, .-mul_op
+	.ident	"GCC: (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0"
+	.section	.note.GNU-stack,"",@progbits
+	.section	.note.gnu.property,"a"
+	.align 4
+	.long	 1f - 0f
+	.long	 4f - 1f
+	.long	 5
+0:
+	.string	 "GNU"
+1:
+	.align 4
+	.long	 0xc0000002
+	.long	 3f - 2f
+2:
+	.long	 0x3
+3:
+	.align 4
+4:

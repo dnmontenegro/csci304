@@ -1,0 +1,15 @@
+break (b)
+Based on experience with debuggers in other languages, we knew that breakpoints were important for debugging. Through some help commands we found the break command. We used this command to set a breakpoint. A breakpoint stops the program at the point at which the breakpoint is located. The break command sets a breakpoint at a given function name or line number. For example, using the break command like "b 5" sets a breakpoint at the 5th line of the code being debugged.
+
+run (r)
+We needed to figure out how to run the program in the debugger and found the run command. We used the command to start debugging the code. The run command begins the execution of the program. The program will stop at the first assigned breakpoint.
+
+next (n)
+We chose next because we wanted to know how to proceed in the debugger. We used the next command to advance to the next line. The next command runs the program until the next line and then stops. The next command does not step into a function but merely executes the entire function and then stops.
+
+step (s)
+We wanted to know the difference between next and step so we tested both. We used the step command to advance to the next line even within a function. The step command runs the program until the next line and then stops. The step command will step inside any function in the current line.
+
+print (p)
+We wabted a way to check the values stored in our variables. To do this we found the print command. We used the command to show the value of a variable. The print command displays the value of any expression. The print command can also be used to assign values to existing variables in the current context.
+

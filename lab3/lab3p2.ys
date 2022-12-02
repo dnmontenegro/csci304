@@ -1,0 +1,127 @@
+	.pos 0 
+init:	irmovl Stack, %esp  		# Set up stack pointer  
+	irmovl Stack, %ebp  		# Set up base pointer   
+	call Main			# Execute main program
+	halt				# Terminate program 
+
+	.align 4
+Array:	.long 0x2
+	.long 0x4
+	.long 0x5
+	.long 0x3
+	.long 0x6
+	.long 0x2
+Done:	.long 0xFFFFFFFF
+
+Pairs:	.long 0x3
+
+Main:	pushl   %ebp 
+	rrmovl  %esp, %ebp
+	irmovl	Pairs, %edx
+	pushl 	%edx			# pass number of pairs in as parameter
+	irmovl  Array, %eax		# Store the array of inputs at register edx	
+	pushl 	%eax			# pass array in as parameter
+	call 	get_pair
+	rrmovl  %ebp,%esp
+	popl    %ebp
+	ret 
+
+	
+get_pair:			
+	pushl   %ebp 
+	rrmovl  %esp, %ebp
+	irmovl	$1, %ecx
+	rmmovl  %ecx, -104(%ebp)	# create counter to track number of pairs we have iterated (variable x in c code)
+	jmp	L4
+
+L5:	mrmovl 	8(%ebp), %eax		# get array
+	irmovl	$4, %ecx
+	addl	%ecx, %eax
+	mrmovl	(%eax), %eax
+	rrmovl	%eax, %edx		# get power and store in %edx
+	mrmovl	8(%ebp), %eax
+	mrmovl	(%eax), %eax		# get base and store in %eax
+	pushl	%edx
+	pushl	%eax
+	call	raise2pwr		# call raise2pwr with parameters from %edx and %eax
+	rmmovl	%eax, -12(%ebp)		# RESULT HERE: %eax should now have the result of the exponent
+	mrmovl 	8(%ebp), %eax
+	irmovl	$8, %ecx
+	addl	%ecx, %eax		# get array pointer and increment by 2
+	rmmovl	%eax, 8(%ebp)
+	irmovl	$1, %ecx
+	mrmovl 	-104(%ebp), %eax
+	addl	%ecx, %eax		# increment x (iteration count) by 1
+	rmmovl  %eax, -104(%ebp)
+
+L4:	mrmovl 	-104(%ebp), %eax	# get number of pairs iterated (we will call it x)
+	pushl 	%eax
+	mrmovl 	12(%ebp), %ecx	 
+	mrmovl	(%ecx), %ecx		# get total pairs from input
+	subl	%ecx, %eax		# compare x and total pairs
+	popl	%eax
+	jle	L5			# if x is less than total pairs jump to L5
+	rrmovl  %ebp,%esp		# if not then return
+	popl    %ebp
+	ret 
+
+raise2pwr:
+	pushl   %ebp 
+	rrmovl  %esp, %ebp
+	irmovl	$1, %ecx
+	rmmovl  %ecx, -12(%ebp)		# create default result and store
+	irmovl	$1, %ecx
+	rmmovl  %ecx, -100(%ebp)	# create and store counter for loop (variable i in c code)
+	jmp	L7
+
+L8:	mrmovl	8(%ebp), %eax
+	pushl	%eax
+	mrmovl	-12(%ebp), %eax
+	pushl	%eax	
+	call	mul_op			# call mul_up with result and base as parameters
+	rmmovl	%eax, -12(%ebp)
+	irmovl	$1, %ecx
+	mrmovl 	-100(%ebp), %eax
+	addl	%ecx, %eax
+	rmmovl  %eax, -100(%ebp)
+
+
+L7:	mrmovl 	-100(%ebp), %eax
+	pushl 	%eax
+	mrmovl 	12(%ebp), %ecx	  
+	subl	%ecx, %eax		# compare i (loop counter) with power parameter
+	popl	%eax
+	jle	L8			# if i is less than power parameter, jump to L8 
+	mrmovl 	-12(%ebp), %eax	  	# if i is not less than power, return result
+	rrmovl  %ebp,%esp
+	popl    %ebp
+	ret 
+
+mul_op:	pushl   %ebp 
+	rrmovl  %esp, %ebp
+	mrmovl	8(%ebp), %eax
+	rmmovl	%eax, -4(%ebp)		# store copy of result parameter in memory
+	jmp	L11
+
+L12:	mrmovl	8(%ebp), %eax
+	mrmovl 	-4(%ebp), %ecx
+	addl	%eax, %ecx		
+	rmmovl  %ecx, -4(%ebp)		# add result parameter to copy and store in copy
+	irmovl	$1, %edx
+	mrmovl 	12(%ebp), %eax
+	subl	%edx, %eax
+	rmmovl  %eax, 12(%ebp)		# decrement base parameter by 1
+
+L11:	irmovl	$1, %ecx
+	mrmovl 	12(%ebp), %eax
+	subl	%ecx, %eax		# compare base to 1
+	jg	L12		  	# if base is greater than 1 jump to L12
+	mrmovl	-4(%ebp), %eax	  	# if base is not greater than 1 then return result parameter
+	rrmovl  %ebp,%esp
+	popl    %ebp
+	ret 
+
+
+# The stack starts here and grows to lower addresses
+	.pos 0x1000		
+Stack:

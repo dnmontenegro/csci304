@@ -1,0 +1,8 @@
+Student names: David Montenegro and Steven Jia
+Effort Distribution: 50%/50%
+Total Time to Complete Lab: 15 hours
+Concerns/Problems: none
+Directions: .ys files contain Y86 code that can be run in the Y86 simulator in the lab specs.
+
+Differences between optimization levels:
+The most evident difference is that each level has fewer lines than before. Level 0 is the only one where each input value is stored in memory one by onein main. Level 1 and 2 have very short main sections that seem to just call get_pair. Level 0 is the only one to use registers and memory address calls to get parameters for raise2pwr. Level 1 just has one register store the first parameter. Level 2 does not seem to call anything but .cfi and endbr32 commands. For raise2pwr, level 1 actually have the most lines but level 0 accesses locations in memory many more times. Level 2, like level 1, avoids memory access but uses .p2align and .cfi commands which seem to reduce the total number of lines in the code. Mul_op is the same as raise2pwr with level 1 and 2 having fewer instances of memory access than level 0. Overall, it seems the main goal of optimization is to avoid using relatively slow memory.

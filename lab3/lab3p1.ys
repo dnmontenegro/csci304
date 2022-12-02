@@ -1,0 +1,61 @@
+	.pos 0 
+init:	irmovl Stack, %esp  	# Set up stack pointer  
+	irmovl Stack, %ebp  	# Set up base pointer   
+	call Main		# Execute main program
+	halt			# Terminate program 
+
+	.align 4
+Input:	.long 0x5
+	.long 0xc
+	.long 0x3
+Done:	.long 0xFFFFFFFF
+
+Main:	pushl   %ebp 
+	rrmovl  %esp,%ebp
+	irmovl  Input, %edx	# Store the array of inputs at register edx	
+	jmp     L2		
+
+L7:	mrmovl	(%edx), %ecx 	# Store the current input value at register ecx
+	pushl   %ecx
+	irmovl  $1, %eax	# Store starting total at register eax
+	jmp	L3
+
+L6:	rrmovl  %ecx, %ebx	# Store current input value
+	rrmovl  %eax, %esi	# Store current total
+	jmp     L4
+
+L5:	addl	%esi, %eax	# Add to the current total
+	irmovl	$1, %edi
+	subl	%edi, %ebx	# Subtract 1 from the input value (register ebx)
+
+L4:	pushl   %ebx
+	irmovl	$1, %edi
+	subl    %edi, %ebx	# Compare 1 to the input value (register ebx)
+	popl    %ebx
+	jg 	L5		# If input value is greater than 1, jump to L5
+	irmovl	$1, %edi
+	subl	%edi, %ecx	# Subtract 1 from the current input value (register ecx)
+	
+L3:	pushl   %ecx
+	irmovl	$0, %edi	
+	subl    %edi, %ecx	# Compare 0 to the current input value (register ecx)
+	popl    %ecx
+	jne 	L6		# If current input value is not equal to 0, jump to L6
+	irmovl	$4, %edi
+	addl    %edi, %edx	# Advance to the next input value
+				# CALCULATION RESULT HERE, CHECK %eax
+
+L2:	mrmovl  (%edx), %ecx	# Store the current input value at register ecx
+	pushl   %ecx		
+	irmovl	$-1, %edi	
+	subl    %edi, %ecx	# Compare -1 to the current input value (register ecx)
+	popl    %ecx		
+	jne	L7		# If current input value is not equal to -1, jump to L7
+	rrmovl  %ebp,%esp
+	popl    %ebp
+	ret 
+
+# The stack starts here and grows to lower addresses
+	.pos 0x1000		
+Stack:	 
+

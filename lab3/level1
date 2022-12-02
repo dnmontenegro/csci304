@@ -1,0 +1,130 @@
+	.file	"lab3p2.c"
+	.text
+	.globl	main
+	.type	main, @function
+main:
+.LFB0:
+	.cfi_startproc
+	endbr32
+	ret
+	.cfi_endproc
+.LFE0:
+	.size	main, .-main
+	.globl	get_pair
+	.type	get_pair, @function
+get_pair:
+.LFB1:
+	.cfi_startproc
+	endbr32
+	movl	8(%esp), %edx
+	testl	%edx, %edx
+	jle	.L2
+	addl	$1, %edx
+	movl	$1, %eax
+.L4:
+	addl	$1, %eax
+	cmpl	%eax, %edx
+	jne	.L4
+.L2:
+	ret
+	.cfi_endproc
+.LFE1:
+	.size	get_pair, .-get_pair
+	.globl	raise2pwr
+	.type	raise2pwr, @function
+raise2pwr:
+.LFB2:
+	.cfi_startproc
+	endbr32
+	pushl	%edi
+	.cfi_def_cfa_offset 8
+	.cfi_offset 7, -8
+	pushl	%esi
+	.cfi_def_cfa_offset 12
+	.cfi_offset 6, -12
+	pushl	%ebx
+	.cfi_def_cfa_offset 16
+	.cfi_offset 3, -16
+	movl	16(%esp), %ebx
+	movl	20(%esp), %esi
+	testl	%esi, %esi
+	jle	.L11
+	addl	$1, %esi
+	movl	$1, %ecx
+	movl	$1, %edx
+	leal	-2(%ebx), %edi
+	jmp	.L8
+.L10:
+	addl	$1, %edx
+	cmpl	%esi, %edx
+	je	.L6
+.L8:
+	movl	%ebx, %eax
+	cmpl	$1, %ebx
+	jle	.L10
+.L9:
+	subl	$1, %eax
+	cmpl	$1, %eax
+	jne	.L9
+	movl	%edi, %eax
+	imull	%ecx, %eax
+	leal	(%eax,%ecx,2), %ecx
+	jmp	.L10
+.L11:
+	movl	$1, %ecx
+.L6:
+	movl	%ecx, %eax
+	popl	%ebx
+	.cfi_restore 3
+	.cfi_def_cfa_offset 12
+	popl	%esi
+	.cfi_restore 6
+	.cfi_def_cfa_offset 8
+	popl	%edi
+	.cfi_restore 7
+	.cfi_def_cfa_offset 4
+	ret
+	.cfi_endproc
+.LFE2:
+	.size	raise2pwr, .-raise2pwr
+	.globl	mul_op
+	.type	mul_op, @function
+mul_op:
+.LFB3:
+	.cfi_startproc
+	endbr32
+	movl	4(%esp), %eax
+	movl	8(%esp), %ecx
+	cmpl	$1, %ecx
+	jle	.L16
+	movl	%ecx, %edx
+.L18:
+	subl	$1, %edx
+	cmpl	$1, %edx
+	jne	.L18
+	subl	$2, %ecx
+	imull	%eax, %ecx
+	leal	(%ecx,%eax,2), %eax
+.L16:
+	ret
+	.cfi_endproc
+.LFE3:
+	.size	mul_op, .-mul_op
+	.ident	"GCC: (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0"
+	.section	.note.GNU-stack,"",@progbits
+	.section	.note.gnu.property,"a"
+	.align 4
+	.long	 1f - 0f
+	.long	 4f - 1f
+	.long	 5
+0:
+	.string	 "GNU"
+1:
+	.align 4
+	.long	 0xc0000002
+	.long	 3f - 2f
+2:
+	.long	 0x3
+3:
+	.align 4
+4:
