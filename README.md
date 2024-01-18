@@ -1,3 +1,3 @@
-# cs304
+# csci304
 
-Projects for cs304
+Projects for CSCI 304, Computer Organization.
